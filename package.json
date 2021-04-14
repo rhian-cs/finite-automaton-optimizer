@@ -4,7 +4,7 @@
   "description": "NDFA-lambda optimizer, which converts automatons to a minimal DFA",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
+    "samples": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
