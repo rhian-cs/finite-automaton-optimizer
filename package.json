@@ -1,7 +1,7 @@
 {
   "name": "automaton-optimizer",
   "version": "1.0.0",
-  "description": "AFND-lambda optimizer, which converts automatons to a minimal AFD",
+  "description": "NDFA-lambda optimizer, which converts automatons to a minimal DFA",
   "main": "index.js",
   "scripts": {
     "start": "node index",
