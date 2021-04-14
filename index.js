@@ -1,14 +1,14 @@
-const { printAutomaton } = require('./format')
-const fs = require('fs')
+const { printAutomaton } = require('./mixins/format')
+const { readAutomatonFromFile } = require('./mixins/io')
 
-fs.readFile('./sample/nfa-empty-1.json', 'utf8', (err, data) => {
+const file_directories = [
+  './sample/nfa-empty-1.json',
+  './sample/nfa-1.json',
+  './sample/dfa-1.json',
+]
 
-  if(err) {
-    console.log(`Error reading file from disk: ${err}`)
-    return
-  }
-
-  const automaton = JSON.parse(data)
-
-  printAutomaton(automaton)
-})
+file_directories.forEach(directory => {
+  const automaton = readAutomatonFromFile(directory)
+  if(automaton)
+    printAutomaton(automaton)
+});
