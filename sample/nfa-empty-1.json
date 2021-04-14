@@ -1,0 +1,38 @@
+{
+  "type": "nfa-empty",
+  "symbols": ["0", "1"],
+  "states": [
+    {
+      "paths": {
+        "0": [1],
+        "1": []
+      },
+      "emptyPaths": [2],
+      "is_final": false
+    },
+    {
+      "paths": {
+        "0": [1],
+        "1": []
+      },
+      "emptyPaths": [3],
+      "is_final": false
+    },
+    {
+      "paths": {
+        "0": [],
+        "1": [2, 3]
+      },
+      "emptyPaths": [],
+      "is_final": true
+    },
+    {
+      "paths": {
+        "0": [],
+        "1": []
+      },
+      "emptyPaths": [],
+      "is_final": true
+    }
+  ]
+}
