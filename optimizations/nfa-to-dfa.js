@@ -1,8 +1,9 @@
 const { arrayEquals } = require('../mixins/arrays')
 
 function convertNFAtoDFA(automaton) {
-  const symbols = automaton.symbols
   const originalStates = automaton.states
+  const symbols = automaton.symbols
+  const finalStates = originalStates.map(state => state.isFinal)
 
   let newStates = [
     {
@@ -13,36 +14,50 @@ function convertNFAtoDFA(automaton) {
   for (let i = 0; i < newStates.length; i++) {
     newState = newStates[i]
 
-    if(typeof newState.newPath !== 'undefined') { continue }
+    if(typeof newState.paths !== 'undefined') { continue }
+
+    newState.paths = {}
 
     newState.containingStates.forEach(containingState => {
       let originalPaths = originalStates[containingState].paths
 
-      for (const sym in originalPaths) {
+      // TODO: Qual das duas formas é melhor?
+      // for (const sym in originalPaths) {
+      symbols.forEach(sym => {
         const originalPathStates = originalPaths[sym]
 
-        if(!originalPathStates.length) { continue }
+        if(!originalPathStates.length) { return console.log(`(e${i})`, newState.containingStates, ", "+sym+" = -"); } // TODO: REMOVER
+        if(!originalPathStates.length) { return }
 
         let newStateIndex = findNewStateIndex(newStates, originalPathStates)
 
-        // testConsoleLog(newState, sym, originalPathStates, newStateIndex)
-
         if(newStateIndex == -1) {
+          newStateIndex = newStates.length
+
           newStates.push({
             containingStates: originalPaths[sym],
           })
-
-          newState.newPath = newStates.length
-        } else {
-          newState.newPath = newStateIndex
         }
-      }
+        newState.paths[sym] = [newStateIndex]
+        newState.emptyPaths = []
+
+        console.log(`(e${i})`, newState.containingStates, ", "+sym+" =", originalPathStates, `(e${newStateIndex})`);
+      })
+
+      newState.isFinal = isNewStateFinal(newState.containingStates, finalStates)
     })
+    console.log("")
   }
 
-  console.log(newStates);
+  newStates.forEach(newState => {
+    delete newState.containingStates
+  });
 
-  return automaton
+  return {
+    type: 'dfa',
+    symbols,
+    states: newStates
+  }
 }
 
 // Private functions
@@ -59,8 +74,16 @@ function findNewStateIndex(newStates, originalPathStates) {
   return returnIndex
 }
 
-function testConsoleLog(newState, sym, originalPathStates, newStateIndex) {
-  console.log(newState.containingStates, ", "+sym+ " =" , originalPathStates, "(", newStateIndex, ")")
+function isNewStateFinal(containingStates, finalStates) {
+  let isFinal = false
+
+  containingStates.forEach(stateIndex => {
+    if(finalStates[stateIndex]) {
+      isFinal = true
+    }
+  })
+
+  return isFinal
 }
 
 module.exports = { convertNFAtoDFA }
