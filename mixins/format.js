@@ -1,4 +1,4 @@
-const { printTable } = require('console-table-printer');
+const { printTable } = require('console-table-printer')
 
 function statesTable(automaton) {
   let table = splitPaths(automaton)
@@ -26,7 +26,7 @@ function splitPaths(automaton) {
     }
 
     return row
-  });
+  })
 }
 
 function separateStateList(stateList) {
