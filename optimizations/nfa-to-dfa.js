@@ -1,72 +1,45 @@
-const { arrayEquals } = require('../mixins/arrays')
+const { arrayEquals,pushToArrayIfNotPresent } = require('../mixins/arrays')
+const { separateStateList } = require('../mixins/format')
+const { isUndefined }       = require('../mixins/utils')
 
-function convertNFAtoDFA(automaton) {
+function convertNFAtoDFA(automaton, isPrintCalculations = true) {
   const originalStates = automaton.states
   const symbols = automaton.symbols
   const finalStates = originalStates.map(state => state.isFinal)
+  let eStates = [{ containingStates: [0] }]
 
-  let newStates = [
-    {
-      containingStates: [0]
-    }
-  ]
+  calculateAllEStates(eStates, originalStates, symbols, finalStates, isPrintCalculations)
+  deleteUnusedProperties(eStates)
 
-  for (let i = 0; i < newStates.length; i++) {
-    newState = newStates[i]
+  return createAutomatonFromEStates(eStates, symbols)
+}
 
-    if(typeof newState.paths !== 'undefined') { continue }
+// Private Functions
 
-    newState.paths = {}
+function calculateAllEStates(eStates, originalStates, symbols, finalStates, isPrintCalculations) {
+  for (let index = 0; index < eStates.length; index++) {
+    let eState = eStates[index]
 
-    newState.containingStates.forEach(containingState => {
-      let originalPaths = originalStates[containingState].paths
-
-      // TODO: Qual das duas formas é melhor?
-      // for (const sym in originalPaths) {
-      symbols.forEach(sym => {
-        const originalPathStates = originalPaths[sym]
-
-        if(!originalPathStates.length) { return console.log(`(e${i})`, newState.containingStates, ", "+sym+" = -"); } // TODO: REMOVER
-        if(!originalPathStates.length) { return }
-
-        let newStateIndex = findNewStateIndex(newStates, originalPathStates)
-
-        if(newStateIndex == -1) {
-          newStateIndex = newStates.length
-
-          newStates.push({
-            containingStates: originalPaths[sym],
-          })
-        }
-        newState.paths[sym] = [newStateIndex]
-        newState.emptyPaths = []
-
-        console.log(`(e${i})`, newState.containingStates, ", "+sym+" =", originalPathStates, `(e${newStateIndex})`);
-      })
-
-      newState.isFinal = isNewStateFinal(newState.containingStates, finalStates)
-    })
-    console.log("")
-  }
-
-  newStates.forEach(newState => {
-    delete newState.containingStates
-  });
-
-  return {
-    type: 'dfa',
-    symbols,
-    states: newStates
+    calculateDelta(eStates, index, symbols, originalStates, isPrintCalculations)
+    calculateFinalStates(eState, finalStates)
   }
 }
 
-// Private functions
+function calculateDelta(allEStates, index, symbols, originalStates, isPrintCalculations) {
+  const eState = allEStates[index]
+  eState.paths = {}
 
-function findNewStateIndex(newStates, originalPathStates) {
+  const allPaths = findAllPaths(eState.containingStates, originalStates, symbols, isPrintCalculations)
+  attributePathsToEState(allEStates, eState, symbols, allPaths)
+
+  return allPaths
+}
+
+function findEStateIndex(allEStates, originalPathStates) {
   let returnIndex = -1
 
-  newStates.forEach((newState, index) => {
-    if(arrayEquals(newState.containingStates, originalPathStates)) {
+  allEStates.forEach((allEStates, index) => {
+    if(arrayEquals(allEStates.containingStates, originalPathStates)) {
       returnIndex = index
     }
   })
@@ -74,7 +47,58 @@ function findNewStateIndex(newStates, originalPathStates) {
   return returnIndex
 }
 
-function isNewStateFinal(containingStates, finalStates) {
+function calculateFinalStates(eState, finalStates) {
+  eState.isFinal = isEStateFinal(eState.containingStates, finalStates)
+}
+
+function findAllPaths(containingStates, originalStates, symbols, isPrintCalculations) {
+  let allPaths = {}
+
+  containingStates.forEach(containingState => {
+    findPathBySymbols(allPaths, originalStates[containingState].paths)
+  })
+
+  if(isPrintCalculations) {
+    printEStateCalculations(symbols, containingStates, allPaths)
+  }
+
+  return allPaths
+}
+
+function findPathBySymbols(allPaths, originalPaths) {
+  for (const sym in originalPaths) {
+    if(isUndefined(allPaths[sym])) { allPaths[sym] = [] }
+
+    originalPaths[sym].forEach(path => {
+      pushToArrayIfNotPresent(allPaths[sym], path)
+    })
+  }
+}
+
+function attributePathsToEState(allEStates, eState, symbols, allPaths) {
+  symbols.forEach(sym => {
+    const newPath = allPaths[sym]
+    if(!newPath || !newPath.length) return
+
+    let pathIndex = addPathToIndexIfNotPresent(allEStates, newPath)
+
+    eState.paths[sym] = [pathIndex]
+  })
+}
+
+function addPathToIndexIfNotPresent(allEStates, newPath) {
+  let pathIndex = findEStateIndex(allEStates, newPath)
+
+  if(pathIndex === -1) {
+    pathIndex = allEStates.length
+
+    allEStates.push({ containingStates: newPath })
+  }
+
+  return pathIndex
+}
+
+function isEStateFinal(containingStates, finalStates) {
   let isFinal = false
 
   containingStates.forEach(stateIndex => {
@@ -84,6 +108,28 @@ function isNewStateFinal(containingStates, finalStates) {
   })
 
   return isFinal
+}
+
+function deleteUnusedProperties(eStates) {
+  eStates.forEach(eState => delete eState.containingStates )
+}
+
+function createAutomatonFromEStates(eStates, symbols) {
+  return {
+    type: 'dfa',
+    symbols,
+    states: eStates
+  }
+}
+
+function printEStateCalculations(symbols, containingStates, allPaths) {
+  symbols.forEach(sym => {
+    const paths = allPaths[sym]
+    if(!paths) return
+
+    console.log(`[${separateStateList(containingStates)}], ${sym} = [${separateStateList(paths)}]`);
+  });
+  console.log('');
 }
 
 module.exports = { convertNFAtoDFA }

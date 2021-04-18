@@ -5,4 +5,10 @@ function arrayEquals(a, b) {
     a.every((val, index) => val === b[index]);
 }
 
-module.exports = { arrayEquals }
+function pushToArrayIfNotPresent(array, item) {
+  if(!array.includes(item)) {
+    array.push(item)
+  }
+}
+
+module.exports = { arrayEquals, pushToArrayIfNotPresent }
