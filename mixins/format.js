@@ -11,26 +11,8 @@ function printAutomaton(automaton) {
   printTable(statesTable(automaton))
 }
 
-// Private functions
-
-function splitPaths(automaton) {
-
-  return automaton.states.map((state, index) => {
-    let row = [`q${index}`]
-    for (const sym in state.paths) {
-      row.push(separateStateList(state.paths[sym]))
-    }
-
-    if(automaton.type == "nfa-empty") {
-      row.push(separateStateList(state.emptyPaths))
-    }
-
-    return row
-  })
-}
-
 function separateStateList(stateList) {
-  if (!stateList.length) {
+  if (!stateList || !stateList.length) {
     return '-'
   }
 
@@ -47,8 +29,26 @@ function separateStateList(stateList) {
   return string
 }
 
+// Private functions
+
+function splitPaths(automaton) {
+  return automaton.states.map((state, index) => {
+    let row = [`q${index}`]
+
+    automaton.symbols.forEach(sym => {
+      row.push(separateStateList(state.paths[sym]))
+    })
+
+    if(automaton.type == "nfa-empty") {
+      row.push(separateStateList(state.emptyPaths))
+    }
+
+    return row
+  })
+}
+
 function automatonHeader(automaton) {
-  header = ['d', automaton.symbols].flat()
+  header = ['δ', automaton.symbols].flat()
 
   if(automaton.type == "nfa-empty") {
     header.push('ε')
@@ -57,4 +57,4 @@ function automatonHeader(automaton) {
   return header
 }
 
-module.exports = { statesTable, printAutomaton }
+module.exports = { statesTable, printAutomaton, separateStateList }

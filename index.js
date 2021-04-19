@@ -6,8 +6,9 @@ const { convertNFAtoDFA } = require('./optimizations/nfa-to-dfa')
 const file_directories = [
   // './automata/nfa-empty-1.json',
   // './automata/nfa-1.json',
-  './automata/nfa-2.json',
+  // './automata/nfa-2.json',
   // './automata/dfa-1.json',
+  './automata/atividades/2021-04-13/ex1-nfa.json',
 ]
 
 file_directories.forEach(directory => {
