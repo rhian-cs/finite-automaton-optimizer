@@ -1,6 +1,10 @@
-const { arrayEquals,pushToArrayIfNotPresent } = require('../mixins/arrays')
-const { separateStateList } = require('../mixins/format')
-const { isUndefined }       = require('../mixins/utils')
+const { formatStateList } = require('../mixins/format')
+const { isUndefined }     = require('../mixins/utils')
+const {
+  arrayEquals,
+  pushToArrayIfNotPresent,
+  emptyArrayOrUndefined
+} = require('../mixins/arrays')
 
 function convertNFAtoDFA(automaton, isPrintCalculations = true) {
   const originalStates = automaton.states
@@ -78,7 +82,7 @@ function findPathBySymbols(allPaths, originalPaths) {
 function attributePathsToEState(allEStates, eState, symbols, allPaths) {
   symbols.forEach(sym => {
     const newPath = allPaths[sym]
-    if(!newPath || !newPath.length) return
+    if(emptyArrayOrUndefined(newPath)) return
 
     let pathIndex = addPathToIndexIfNotPresent(allEStates, newPath)
 
@@ -127,7 +131,7 @@ function printEStateCalculations(symbols, containingStates, allPaths) {
     const paths = allPaths[sym]
     if(!paths) return
 
-    console.log(`[${separateStateList(containingStates)}], ${sym} = [${separateStateList(paths)}]`);
+    console.log(`[${formatStateList(containingStates)}], ${sym} = [${formatStateList(paths)}]`);
   });
   console.log('');
 }

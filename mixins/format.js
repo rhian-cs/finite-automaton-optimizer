@@ -1,3 +1,4 @@
+const { isLastIndexInArray, emptyArrayOrUndefined }  = require('./arrays')
 const { printTable } = require('console-table-printer')
 
 function statesTable(automaton) {
@@ -11,40 +12,45 @@ function printAutomaton(automaton) {
   printTable(statesTable(automaton))
 }
 
-function separateStateList(stateList) {
-  if (!stateList || !stateList.length) {
-    return '-'
-  }
+function formatStateList(stateList, stateSymbol = 'q') {
+  if (emptyArrayOrUndefined(stateList)) { return '-' }
 
-  let string = ''
+  let formattedStateList = ''
 
   stateList.forEach((state, index) => {
-    string += `q${state}`
+    formattedStateList += `${stateSymbol}${state}`
 
-    if(index != stateList.length -1) {
-      string += ','
+    if(isLastIndexInArray(stateList, index)) {
+      formattedStateList += ','
     }
   })
 
-  return string
+  return formattedStateList
 }
 
-// Private functions
+// Private Functions
 
 function splitPaths(automaton) {
   return automaton.states.map((state, index) => {
     let row = [`q${index}`]
 
-    automaton.symbols.forEach(sym => {
-      row.push(separateStateList(state.paths[sym]))
-    })
-
-    if(automaton.type == "nfa-empty") {
-      row.push(separateStateList(state.emptyPaths))
-    }
+    addStateListToRow(row, automaton, state)
+    addEmptyStatesToRow(row, automaton, state)
 
     return row
   })
+}
+
+function addStateListToRow(row, automaton, state) {
+  automaton.symbols.forEach(sym => {
+    row.push(formatStateList(state.paths[sym]))
+  })
+}
+
+function addEmptyStatesToRow(row, automaton, state) {
+  if(automaton.type == "nfa-empty") {
+    row.push(formatStateList(state.emptyPaths))
+  }
 }
 
 function automatonHeader(automaton) {
@@ -57,4 +63,8 @@ function automatonHeader(automaton) {
   return header
 }
 
-module.exports = { statesTable, printAutomaton, separateStateList }
+module.exports = {
+  statesTable,
+  printAutomaton,
+  formatStateList,
+}

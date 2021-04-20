@@ -11,4 +11,17 @@ function pushToArrayIfNotPresent(array, item) {
   }
 }
 
-module.exports = { arrayEquals, pushToArrayIfNotPresent }
+function isLastIndexInArray(array, index) {
+  return index != array.length -1
+}
+
+function emptyArrayOrUndefined(array) {
+  return !array || !array.length
+}
+
+module.exports = {
+  arrayEquals,
+  pushToArrayIfNotPresent,
+  isLastIndexInArray,
+  emptyArrayOrUndefined,
+}
