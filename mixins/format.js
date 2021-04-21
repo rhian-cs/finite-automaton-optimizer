@@ -10,6 +10,7 @@ function statesTable(automaton) {
 
 function printAutomaton(automaton) {
   printTable(statesTable(automaton))
+  printFinalStates(automaton)
 }
 
 function formatStateList(stateList, stateSymbol = 'q') {
@@ -48,7 +49,7 @@ function addStateListToRow(row, automaton, state) {
 }
 
 function addEmptyStatesToRow(row, automaton, state) {
-  if(automaton.type == "nfa-empty") {
+  if(automaton.type == 'nfa-empty') {
     row.push(formatStateList(state.emptyPaths))
   }
 }
@@ -56,11 +57,20 @@ function addEmptyStatesToRow(row, automaton, state) {
 function automatonHeader(automaton) {
   header = ['δ', automaton.symbols].flat()
 
-  if(automaton.type == "nfa-empty") {
+  if(automaton.type == 'nfa-empty') {
     header.push('ε')
   }
 
   return header
+}
+
+function printFinalStates(automaton) {
+  let finalStates = []
+  automaton.states.forEach((state, index) => {
+    if(state.isFinal) { finalStates.push(index) }
+  });
+
+  console.log('F = {', formatStateList(finalStates), '}');
 }
 
 module.exports = {
