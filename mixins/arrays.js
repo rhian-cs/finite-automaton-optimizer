@@ -19,9 +19,14 @@ function emptyArrayOrUndefined(array) {
   return !array || !array.length
 }
 
+function numberArray(length) {
+  return [...Array(length + 1).keys()].slice(1)
+}
+
 module.exports = {
   arrayEquals,
   pushToArrayIfNotPresent,
   isLastIndexInArray,
   emptyArrayOrUndefined,
+  numberArray,
 }

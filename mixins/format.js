@@ -1,4 +1,9 @@
-const { isLastIndexInArray, emptyArrayOrUndefined }  = require('./arrays')
+const {
+  isLastIndexInArray,
+  emptyArrayOrUndefined,
+  numberArray
+}  = require('./arrays')
+
 const { printTable } = require('console-table-printer')
 
 function statesTable(automaton) {
@@ -9,8 +14,8 @@ function statesTable(automaton) {
 }
 
 function printAutomaton(automaton) {
+  printAutomatonInMathematicNotation(automaton)
   printTable(statesTable(automaton))
-  printFinalStates(automaton)
 }
 
 function formatStateList(stateList, stateSymbol = 'q') {
@@ -62,6 +67,34 @@ function automatonHeader(automaton) {
   }
 
   return header
+}
+
+function printAutomatonInMathematicNotation(automaton) {
+  console.log('M’ = <Q, Σ, δ’, q0, F’>');
+
+  printStateList(automaton)
+  printSymbolList(automaton)
+  printFinalStates(automaton)
+}
+
+function printStateList(automaton) {
+  const list = numberArray(automaton.states.length)
+
+  console.log('Q = {', formatStateList(list), '}');
+}
+
+function printSymbolList(automaton) {
+  let string = 'Σ = { '
+
+  automaton.symbols.forEach((sym, index) => {
+    string += sym
+
+    if(index < automaton.symbols.length - 1) {
+      string += ','
+    }
+  })
+
+  console.log(string, '}');
 }
 
 function printFinalStates(automaton) {
