@@ -1,35 +1,35 @@
 {
-  "type": "dfa",
+  "type": "nfa",
   "symbols": ["0", "1"],
   "states": [
     {
       "paths": {
         "0": [1],
-        "1": [2]
+        "1": [0]
       },
       "emptyPaths": [],
       "isFinal": false
     },
     {
       "paths": {
-        "0": [1],
-        "1": [3]
+        "0": [1, 2],
+        "1": []
+      },
+      "emptyPaths": [],
+      "isFinal": false
+    },
+    {
+      "paths": {
+        "0": [],
+        "1": [2, 3]
       },
       "emptyPaths": [],
       "isFinal": true
     },
     {
       "paths": {
-        "0": [3],
+        "0": [],
         "1": [2]
-      },
-      "emptyPaths": [],
-      "isFinal": true
-    },
-    {
-      "paths": {
-        "0": [3],
-        "1": [3]
       },
       "emptyPaths": [],
       "isFinal": true

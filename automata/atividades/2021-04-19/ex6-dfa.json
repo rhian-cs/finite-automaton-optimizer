@@ -1,0 +1,78 @@
+{
+  "type": "minimal-dfa",
+  "symbols": ["0", "1"],
+  "states": [
+    {
+      "paths": {
+        "0": [1],
+        "1": [2]
+      },
+      "emptyPaths": [],
+      "isFinal": false
+    },
+    {
+      "paths": {
+        "0": [3],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": false
+    },
+    {
+      "paths": {
+        "0": [5],
+        "1": [6]
+      },
+      "emptyPaths": [],
+      "isFinal": false
+    },
+    {
+      "paths": {
+        "0": [4],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    },
+    {
+      "paths": {
+        "0": [3],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    },
+    {
+      "paths": {
+        "0": [7],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    },
+    {
+      "paths": {
+        "0": [8],
+        "1": [6]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    },
+    {
+      "paths": {
+        "0": [7],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    },
+    {
+      "paths": {
+        "0": [7],
+        "1": [4]
+      },
+      "emptyPaths": [],
+      "isFinal": true
+    }
+  ]
+}
