@@ -41,28 +41,34 @@ function calculateAllDifferences(states, differenceList) {
     if(combination.isDifferent) { continue }
 
     const result = calculateCombinationResults(states, combination)
-
-    console.log(combination);
-    console.log(result);
-
   }
 }
 
 function calculateCombinationResults(states, combination) {
-  let result = {}
+  let combinationResults = {}
 
   combination.containingStates.forEach(stateIndex => {
     const paths = states[stateIndex].paths
 
     for (const sym in paths) {
-      if(isUndefined(result[sym])) {
-        result[sym] = []
-      }
-      result[sym].push(paths[sym][0])
+      if(isUndefined(combinationResults[sym])) { combinationResults[sym] = [] }
+
+      const symbolResult = paths[sym][0]
+
+      combinationResults[sym].push(symbolResult)
     }
   });
 
-  return result
+  printMathNotationForCombinationResults(combination.containingStates, combinationResults)
+
+  return combinationResults
+}
+
+function printMathNotationForCombinationResults(containingStates, combinationResults) {
+  for (const sym in combinationResults) {
+    console.log(containingStates, '->', sym, '=', combinationResults[sym]);
+  }
+  console.log();
 }
 
 module.exports = { convertDFAtoMinimalDFA }
