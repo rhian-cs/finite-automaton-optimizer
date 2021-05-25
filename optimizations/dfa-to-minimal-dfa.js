@@ -1,11 +1,12 @@
 const { isUndefined } = require('../mixins/utils')
+const { arrayIncludesSorted } = require('../mixins/arrays')
 
 function convertDFAtoMinimalDFA(automaton) {
   let differenceList = createDifferenceList(automaton)
 
   calculateAllDifferences(automaton.states, differenceList)
 
-  console.log(differenceList);
+  console.log(differenceList)
 
   return automaton
 }
@@ -36,15 +37,22 @@ function newListEntry(states, i, j) {
 
 function calculateAllDifferences(states, differenceList) {
   for (let i = 0; i < differenceList.length; i++) {
-    const combination = differenceList[i];
+    const combination = differenceList[i]
 
     if(combination.isDifferent) { continue }
 
-    const result = calculateCombinationResults(states, combination)
+    const isDifferent = calculateCombinationDifference(states, differenceList, combination)
+
+    console.log(isDifferent);
+
+    if(isDifferent) {
+      combination.isDifferent = isDifferent
+      i = 0; // Restarting because it may affect other states
+    }
   }
 }
 
-function calculateCombinationResults(states, combination) {
+function calculateCombinationDifference(states, differenceList, combination) {
   let combinationResults = {}
 
   combination.containingStates.forEach(stateIndex => {
@@ -57,18 +65,28 @@ function calculateCombinationResults(states, combination) {
 
       combinationResults[sym].push(symbolResult)
     }
-  });
+  })
 
   printMathNotationForCombinationResults(combination.containingStates, combinationResults)
 
-  return combinationResults
+  return differenceListContainsCombination(differenceList, combinationResults)
 }
 
 function printMathNotationForCombinationResults(containingStates, combinationResults) {
   for (const sym in combinationResults) {
-    console.log(containingStates, '->', sym, '=', combinationResults[sym]);
+    console.log(containingStates, '->', sym, '=', combinationResults[sym])
   }
-  console.log();
+  console.log()
+}
+
+function differenceListContainsCombination(differenceList, stateCombination) {
+  return arrayIncludesSorted(differentStates(differenceList), stateCombination)
+}
+
+function differentStates(differenceList) {
+  return differenceList.filter((combination) => {
+    return combination.isDifferent
+  })
 }
 
 module.exports = { convertDFAtoMinimalDFA }

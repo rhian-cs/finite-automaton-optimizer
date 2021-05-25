@@ -23,10 +23,33 @@ function numberArray(length) {
   return [...Array(length + 1).keys()].slice(1)
 }
 
+function arrayIncludesSorted(arr, val) {
+  if(!Array.isArray(arr) || !arr.length) { return false }
+
+  if(Array.isArray(val)) {
+    val.sort()
+  }
+
+  let present = false
+
+  arr.map((arrVal) => {
+    if(Array.isArray(arrVal)) {
+      arrVal.sort()
+    }
+
+    if(val == arrVal) {
+      present = true;
+    }
+  })
+
+  return present
+}
+
 module.exports = {
   arrayEquals,
   pushToArrayIfNotPresent,
   isLastIndexInArray,
   emptyArrayOrUndefined,
   numberArray,
+  arrayIncludesSorted,
 }
