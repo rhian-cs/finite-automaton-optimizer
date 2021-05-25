@@ -1,5 +1,6 @@
 const { isUndefined } = require('../mixins/utils')
 const { arrayIncludesSorted } = require('../mixins/arrays')
+const { formatStateList } = require('../mixins/format')
 
 function convertDFAtoMinimalDFA(automaton) {
   let differenceList = createDifferenceList(automaton)
@@ -43,8 +44,6 @@ function calculateAllDifferences(states, differenceList) {
 
     const isDifferent = calculateCombinationDifference(states, differenceList, combination)
 
-    console.log(isDifferent);
-
     if(isDifferent) {
       combination.isDifferent = isDifferent
       i = 0; // Restarting because it may affect other states
@@ -74,8 +73,14 @@ function calculateCombinationDifference(states, differenceList, combination) {
 
 function printMathNotationForCombinationResults(containingStates, combinationResults) {
   for (const sym in combinationResults) {
-    console.log(containingStates, '->', sym, '=', combinationResults[sym])
+    console.log(
+      `(${formatStateList(containingStates, 'e')}) ->`,
+      sym,
+      '=',
+      formatStateList(combinationResults[sym].sort(), 'e')
+    )
   }
+
   console.log()
 }
 
