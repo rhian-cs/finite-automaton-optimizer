@@ -1,5 +1,5 @@
 # Finite Automaton Optimizer
-An NFA-ε optimizer, that converts NFA-ε, NFA, DFA automata to minimal DFAs.
+An NFA optimizer, that converts NFA automata to DFAs.
 
 This is a university project for the Theory of Computation and Formal Languages discipline of my Computer Science course.
 

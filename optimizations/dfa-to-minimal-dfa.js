@@ -9,6 +9,8 @@ function convertDFAtoMinimalDFA(automaton) {
 
   console.log(differenceList)
 
+  equalStates = calculateEqualStates(automaton.states.length, differenceList)
+
   return automaton
 }
 
@@ -47,6 +49,7 @@ function calculateAllDifferences(states, differenceList) {
     if(isDifferent) {
       combination.isDifferent = isDifferent
       i = 0; // Restarting because it may affect other states
+      console.log("Restarting!");
     }
   }
 }
@@ -92,6 +95,16 @@ function differentStates(differenceList) {
   return differenceList.filter((combination) => {
     return combination.isDifferent
   })
+}
+
+function equalStates(differenceList) {
+  return differenceList.filter((combination) => {
+    return !combination.isDifferent
+  })
+}
+
+function calculateEqualStates(statesQuantity, differenceList) {
+  console.log(statesQuantity);
 }
 
 module.exports = { convertDFAtoMinimalDFA }
